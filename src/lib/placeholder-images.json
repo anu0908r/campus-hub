@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "course-1",
+      "description": "A student writing in a notebook at a sunlit desk.",
+      "imageUrl": "https://images.unsplash.com/photo-1654022963276-ef761eac346e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdHVkZW50JTIwd3JpdGluZ3xlbnwwfHx8fDE3NjkwODU4NTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "student writing"
+    },
+    {
+      "id": "course-2",
+      "description": "An open laptop displaying code on a dark background.",
+      "imageUrl": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsYXB0b3AlMjBjb2RlfGVufDB8fHx8MTc2ODk5NTE4Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "laptop code"
+    },
+    {
+      "id": "course-3",
+      "description": "A collection of history books on a wooden shelf.",
+      "imageUrl": "https://images.unsplash.com/photo-1613324766451-2d03b2ea8190?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxoaXN0b3J5JTIwYm9va3N8ZW58MHx8fHwxNzY5MDkzNzgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "history books"
+    },
+    {
+      "id": "course-4",
+      "description": "Science beakers with colorful liquids in a laboratory.",
+      "imageUrl": "https://images.unsplash.com/photo-1614935151651-0bea6508db6b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzY2llbmNlJTIwbGFifGVufDB8fHx8MTc2OTA4MDk5MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "science lab"
+    },
+    {
+      "id": "course-5",
+      "description": "An artist's easel with a canvas and paint brushes.",
+      "imageUrl": "https://images.unsplash.com/photo-1667980898743-fcfe470b7d2a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxhcnQlMjBjYW52YXN8ZW58MHx8fHwxNzY5MDkzNzgwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "art canvas"
+    },
+    {
+      "id": "course-6",
+      "description": "A person playing a grand piano in a concert hall.",
+      "imageUrl": "https://images.unsplash.com/photo-1648948303220-8dbdb7d0df65?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxncmFuZCUyMHBpYW5vfGVufDB8fHx8MTc2OTA5Mzc4MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "grand piano"
+    }
+  ]
 }
