@@ -1,0 +1,283 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user of the Campus Hub education portal.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user.",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string",
+          "description": "The user's full name."
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's email address.",
+          "format": "email"
+        },
+        "registrationDate": {
+          "type": "string",
+          "description": "The date and time the user registered.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "registrationDate"
+      ]
+    },
+    "Course": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Course",
+      "type": "object",
+      "description": "Represents a course offered on the education portal.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the course."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the course."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the course."
+        },
+        "instructor": {
+          "type": "string",
+          "description": "The name of the course instructor."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "instructor"
+      ]
+    },
+    "Note": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Note",
+      "type": "object",
+      "description": "Represents a study note uploaded by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the note."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Note)"
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N Note)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the note."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the note."
+        },
+        "uploadDate": {
+          "type": "string",
+          "description": "The date and time the note was uploaded.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "courseId",
+        "title",
+        "content",
+        "uploadDate"
+      ]
+    },
+    "Resource": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Resource",
+      "type": "object",
+      "description": "Represents a study resource.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the resource."
+        },
+        "courseId": {
+          "type": "string",
+          "description": "Reference to Course. (Relationship: Course 1:N Resource)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the resource."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL of the resource.",
+          "format": "uri"
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the resource."
+        }
+      },
+      "required": [
+        "id",
+        "courseId",
+        "title",
+        "url",
+        "description"
+      ]
+    },
+    "ChatMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ChatMessage",
+      "type": "object",
+      "description": "Represents a message in the chatbot conversation.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the chat message."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N ChatMessage)"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The date and time the message was sent.",
+          "format": "date-time"
+        },
+        "text": {
+          "type": "string",
+          "description": "The text content of the message."
+        },
+        "isUser": {
+          "type": "boolean",
+          "description": "Indicates if the message was sent by the user (true) or the chatbot (false)."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "timestamp",
+        "text",
+        "isUser"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information.  Path-based ownership: only the user with the matching userId can access their own profile.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}",
+        "definition": {
+          "entityName": "Course",
+          "schema": {
+            "$ref": "#/backend/entities/Course"
+          },
+          "description": "Stores information about available courses.  Accessible to all users.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/notes/{noteId}",
+        "definition": {
+          "entityName": "Note",
+          "schema": {
+            "$ref": "#/backend/entities/Note"
+          },
+          "description": "Stores study notes uploaded by users. Path-based ownership: only the user with the matching userId can access their own notes.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "noteId",
+              "description": "The unique identifier for the note."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/courses/{courseId}/resources/{resourceId}",
+        "definition": {
+          "entityName": "Resource",
+          "schema": {
+            "$ref": "#/backend/entities/Resource"
+          },
+          "description": "Stores resources related to courses.  Accessible to all users who have access to the course.",
+          "params": [
+            {
+              "name": "courseId",
+              "description": "The unique identifier for the course."
+            },
+            {
+              "name": "resourceId",
+              "description": "The unique identifier for the resource."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/chat_messages/{messageId}",
+        "definition": {
+          "entityName": "ChatMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ChatMessage"
+          },
+          "description": "Stores chat messages between the user and the AI chatbot. Path-based ownership: only the user with the matching userId can access their own chat messages.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "messageId",
+              "description": "The unique identifier for the chat message."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support the Campus Hub education portal, focusing on study resources and a chatbot. User data is stored under `/users/{userId}`. Courses are stored in a top-level `/courses` collection. Notes are stored under `/users/{userId}/notes/{noteId}`. Resources related to courses are stored under `/courses/{courseId}/resources/{resourceId}`. Chat messages are stored under `/users/{userId}/chat_messages/{messageId}`. This structure leverages path-based ownership for user-specific data (notes and chat messages) to simplify security rules. Each user owns the notes and chat messages under their respective `/users/{userId}` path, enabling simple authorization based on `request.auth.uid`. Courses are global and publicly accessible. Resources are linked to courses. This design achieves authorization independence by relying on path-based ownership and avoids the need for `get()` calls in security rules, thus supporting atomic operations and improving debuggability. It uses Structural Segregation by separating user-specific data from global course data. The chosen structure supports the QAPs by ensuring that list operations can be secured based on the path structure."
+  }
+}
