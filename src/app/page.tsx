@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, FileText, FolderKanban, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, FolderKanban, Bot } from "lucide-react";
 import Link from "next/link";
 
 const features = [
@@ -23,10 +23,10 @@ const features = [
     href: "/resources",
   },
   {
-    title: "AI Study Tools",
-    description: "Get personalized study tool recommendations.",
-    icon: <Sparkles className="w-8 h-8 text-primary" />,
-    href: "/study-tools",
+    title: "AI Chatbot",
+    description: "Chat with an AI to get help with your studies.",
+    icon: <Bot className="w-8 h-8 text-primary" />,
+    href: "/chatbot",
   },
 ];
 
@@ -60,17 +60,16 @@ export default function Home() {
 
       <Card className="bg-primary/10 border-primary/20">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Supercharge Your Studies</CardTitle>
+          <CardTitle className="font-headline text-2xl">Meet CampusBot</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="mb-4 text-muted-foreground">
-            Leverage the power of AI to get personalized recommendations for study tools and methods.
-            Simply provide your course details, notes, and materials to get started.
+            Your AI-powered study assistant. Ask it questions about any academic subject to get help with your learning.
           </p>
           <Button asChild>
-            <Link href="/study-tools">
-              <Sparkles className="mr-2 h-4 w-4" />
-              Try the AI Study Tool Generator
+            <Link href="/chatbot">
+              <Bot className="mr-2 h-4 w-4" />
+              Start a Conversation
             </Link>
           </Button>
         </CardContent>

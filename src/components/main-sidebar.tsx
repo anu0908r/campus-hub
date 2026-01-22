@@ -6,7 +6,8 @@ import {
   FileText,
   FolderKanban,
   LayoutGrid,
-  Sparkles,
+  Bot,
+  MessageCircle,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -25,7 +26,8 @@ const links = [
   { href: '/courses', label: 'Courses', icon: BookOpen },
   { href: '/notes', label: 'Notes', icon: FileText },
   { href: '/resources', label: 'Resources', icon: FolderKanban },
-  { href: '/study-tools', label: 'AI Study Tools', icon: Sparkles },
+  { href: '/chatbot', label: 'CampusBot', icon: Bot },
+  { href: '/study-tools', label: 'Study Tools', icon: MessageCircle },
 ];
 
 export function MainSidebar() {
