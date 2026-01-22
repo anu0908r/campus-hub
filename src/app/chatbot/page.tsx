@@ -75,7 +75,7 @@ export default function ChatbotPage() {
     
     setIsGenerating(true);
     const userMessage: Omit<ChatMessage, 'id' | 'timestamp'> = {
-        text: values.form,
+        text: values.message,
         isUser: true,
         userId: user.uid,
     };

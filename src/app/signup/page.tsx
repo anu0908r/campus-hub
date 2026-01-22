@@ -22,11 +22,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useAuth, setDocumentNonBlocking } from '@/firebase';
+import { useAuth, setDocumentNonBlocking, useFirestore } from '@/firebase';
 import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
-import { getFirestore, doc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 
 const formSchema = z
   .object({
@@ -43,7 +43,7 @@ const formSchema = z
 
 export default function SignUpPage() {
   const auth = useAuth();
-  const firestore = getFirestore();
+  const firestore = useFirestore();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -61,7 +61,7 @@ export default function SignUpPage() {
        if (userCredential && userCredential.user) {
          const user = userCredential.user;
          const userRef = doc(firestore, 'users', user.uid);
-         await setDocumentNonBlocking(userRef, {
+         setDocumentNonBlocking(userRef, {
            id: user.uid,
            email: user.email,
            name: user.email?.split('@')[0] || 'New User',
@@ -69,17 +69,29 @@ export default function SignUpPage() {
          }, {});
        }
     } catch (error) {
+      let errorMessage = 'An unknown error occurred. Please try again.';
       if (error instanceof FirebaseError) {
-        let errorMessage = 'An unknown error occurred.';
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = 'This email is already in use.';
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'This email is already in use.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Please enter a valid email address.';
+            break;
+          case 'auth/weak-password':
+            errorMessage = 'The password is too weak. Please use at least 6 characters.';
+            break;
+          default:
+            // errorMessage is already set to a generic message
+            break;
         }
-        toast({
-          title: 'Sign-up Failed',
-          description: errorMessage,
-          variant: 'destructive',
-        });
       }
+      
+      toast({
+        title: 'Sign-up Failed',
+        description: errorMessage,
+        variant: 'destructive',
+      });
     }
   };
 
