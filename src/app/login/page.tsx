@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +35,7 @@ const formSchema = z.object({
 
 export default function LoginPage() {
   const auth = useAuth();
+  const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,6 +50,7 @@ export default function LoginPage() {
     try {
       await initiateEmailSignIn(auth, values.email, values.password);
       form.reset();
+      router.push('/');
     } catch (error) {
         if (error instanceof FirebaseError) {
             let errorMessage = "An unknown error occurred.";

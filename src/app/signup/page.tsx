@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -44,6 +45,7 @@ const formSchema = z
 export default function SignUpPage() {
   const auth = useAuth();
   const firestore = useFirestore();
+  const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,6 +77,7 @@ export default function SignUpPage() {
         });
         
         form.reset();
+        router.push('/');
       }
     } catch (error) {
       let errorMessage = 'An unknown error occurred. Please try again.';
