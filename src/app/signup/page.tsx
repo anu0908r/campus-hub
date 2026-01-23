@@ -58,22 +58,30 @@ export default function SignUpPage() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const userCredential = await initiateEmailSignUp(auth, values.email, values.password);
-       if (userCredential && userCredential.user) {
-         const user = userCredential.user;
-         const userRef = doc(firestore, 'users', user.uid);
-         setDocumentNonBlocking(userRef, {
-           id: user.uid,
-           email: user.email,
-           name: user.email?.split('@')[0] || 'New User',
-           registrationDate: new Date().toISOString(),
-         }, {});
-       }
+      if (userCredential && userCredential.user) {
+        const user = userCredential.user;
+        const userRef = doc(firestore, 'users', user.uid);
+        setDocumentNonBlocking(userRef, {
+          id: user.uid,
+          email: user.email,
+          name: user.email?.split('@')[0] || 'New User',
+          registrationDate: new Date().toISOString(),
+        }, {});
+        
+        toast({
+          title: 'Sign-up Successful',
+          description: 'Your account has been created successfully.',
+          variant: 'default',
+        });
+        
+        form.reset();
+      }
     } catch (error) {
       let errorMessage = 'An unknown error occurred. Please try again.';
       if (error instanceof FirebaseError) {
         switch (error.code) {
           case 'auth/email-already-in-use':
-            errorMessage = 'This email is already in use.';
+            errorMessage = 'This email is already in use. Please try signing in or use a different email.';
             break;
           case 'auth/invalid-email':
             errorMessage = 'Please enter a valid email address.';
@@ -81,8 +89,11 @@ export default function SignUpPage() {
           case 'auth/weak-password':
             errorMessage = 'The password is too weak. Please use at least 6 characters.';
             break;
+          case 'auth/operation-not-allowed':
+            errorMessage = 'Email/password authentication is not enabled. Please contact support.';
+            break;
           default:
-            // errorMessage is already set to a generic message
+            console.error('Sign-up error:', error);
             break;
         }
       }

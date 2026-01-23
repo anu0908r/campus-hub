@@ -136,8 +136,8 @@ export default function ChatbotPage() {
                                     <AvatarFallback><Bot /></AvatarFallback>
                                 </Avatar>
                             )}
-                            <div className={cn("max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-xl", message.isUser ? "bg-primary text-primary-foreground" : "bg-muted")}>
-                                <p className="text-sm">{message.text}</p>
+                            <div className={cn("max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-xl whitespace-pre-wrap", message.isUser ? "bg-primary text-primary-foreground" : "bg-muted")}>
+                                <p className="text-sm leading-relaxed">{message.text}</p>
                             </div>
                             {message.isUser && (
                                 <Avatar className="h-8 w-8">

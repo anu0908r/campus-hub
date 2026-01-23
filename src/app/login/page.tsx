@@ -47,11 +47,18 @@ export default function LoginPage() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await initiateEmailSignIn(auth, values.email, values.password);
+      form.reset();
     } catch (error) {
         if (error instanceof FirebaseError) {
             let errorMessage = "An unknown error occurred.";
             if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                 errorMessage = "Invalid email or password.";
+            } else if (error.code === 'auth/too-many-requests') {
+                errorMessage = "Too many failed login attempts. Please try again later.";
+            } else if (error.code === 'auth/operation-not-allowed') {
+                errorMessage = "Email/password authentication is not enabled.";
+            } else {
+                console.error('Login error:', error);
             }
             toast({
                 title: 'Authentication Failed',
