@@ -78,7 +78,15 @@
   * {
     @apply border-border;
   }
+  html, body {
+    @apply min-h-screen;
+  }
   body {
     @apply bg-background text-foreground;
+    background-image: url('/images/campus-background.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }
