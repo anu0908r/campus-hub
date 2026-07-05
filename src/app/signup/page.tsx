@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuth, setDocumentNonBlocking, useFirestore } from '@/firebase';
-import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
+import { getEmailSignInMethods, initiateEmailSignUp } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
 import { doc } from 'firebase/firestore';
@@ -38,14 +38,28 @@ export default function SignUpPage() {
   const router = useRouter();
   const { toast } = useToast();
 
+  const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '', confirmPassword: '' },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const normalizedEmail = normalizeEmail(values.email);
+
     try {
-      const userCredential = await initiateEmailSignUp(auth, values.email, values.password);
+      const signInMethods = await getEmailSignInMethods(auth, normalizedEmail);
+      if (signInMethods.length > 0) {
+        toast({
+          title: 'Sign-up Failed',
+          description: 'This email is already in use. Try signing in instead.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const userCredential = await initiateEmailSignUp(auth, normalizedEmail, values.password);
       if (userCredential && userCredential.user) {
         const user = userCredential.user;
         const userRef = doc(firestore, 'users', user.uid);
@@ -54,6 +68,7 @@ export default function SignUpPage() {
           email: user.email,
           name: user.email?.split('@')[0] || 'New User',
           registrationDate: new Date().toISOString(),
+          role: 'student', // Default role
         }, {});
 
         toast({ title: 'Account created!', description: 'Welcome to Campus Hub.' });

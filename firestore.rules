@@ -57,6 +57,14 @@ service cloud.firestore {
     }
 
     /**
+     * Checks if the currently authenticated user has a specific role.
+     * @param role The role to check for (e.g., 'admin', 'teacher', 'student').
+     */
+    function hasRole(role) {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    /**
      * Checks if the document being accessed already exists.
      * Used in update/delete operations to prevent acting on non-existent data.
      */
@@ -165,29 +173,27 @@ service cloud.firestore {
      * @description Manages global course information.
      * @path /courses/{courseId}
      * @allow (get, list) Any authenticated user can read course information.
-     * @deny (create, update, delete) All write operations are denied for clients.
-     * @principle Provides public read access for shared data while securing it from modification.
+     * @allow (create, update, delete) Admin and teacher roles.
      */
     match /courses/{courseId} {
       allow get: if isSignedIn();
       allow list: if isSignedIn();
-      allow create: if false;
-      allow update: if false;
-      allow delete: if false;
+      allow create: if hasRole('admin') || hasRole('teacher');
+      allow update: if hasRole('admin') || hasRole('teacher');
+      allow delete: if hasRole('admin'); // Only admins can delete courses
 
       /**
        * @description Manages study resources associated with a course.
        * @path /courses/{courseId}/resources/{resourceId}
        * @allow (get, list) Any authenticated user can read course resources.
-       * @deny (create, update, delete) All write operations are denied for clients.
-       * @principle Provides public read access to data related to publicly visible content.
+       * @allow (create, update, delete) Admin and teacher roles.
        */
       match /resources/{resourceId} {
         allow get: if isSignedIn();
         allow list: if isSignedIn();
-        allow create: if false;
-        allow update: if false;
-        allow delete: if false;
+        allow create: if hasRole('admin') || hasRole('teacher');
+        allow update: if hasRole('admin') || hasRole('teacher');
+        allow delete: if hasRole('admin') || hasRole('teacher');
       }
     }
   }

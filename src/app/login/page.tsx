@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/firebase';
-import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
+import { initiateEmailSignIn, initiatePasswordReset } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
 
@@ -32,14 +32,18 @@ export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
 
+  const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '' },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const normalizedEmail = normalizeEmail(values.email);
+
     try {
-      await initiateEmailSignIn(auth, values.email, values.password);
+      await initiateEmailSignIn(auth, normalizedEmail, values.password);
       form.reset();
       router.push('/');
     } catch (error) {
@@ -52,6 +56,39 @@ export default function LoginPage() {
         }
         toast({ title: 'Authentication Failed', description: errorMessage, variant: 'destructive' });
       }
+    }
+  };
+
+  const onForgotPassword = async () => {
+    const emailInput = form.getValues('email');
+    const normalizedEmail = normalizeEmail(emailInput);
+
+    if (!normalizedEmail) {
+      toast({
+        title: 'Email required',
+        description: 'Enter your email address first, then click Forgot password again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await initiatePasswordReset(auth, normalizedEmail);
+      toast({
+        title: 'Reset email sent',
+        description: 'If this email exists, you will receive password reset instructions shortly.',
+      });
+    } catch (error) {
+      if (error instanceof FirebaseError && error.code === 'auth/invalid-email') {
+        toast({ title: 'Invalid email', description: 'Please enter a valid email address.', variant: 'destructive' });
+        return;
+      }
+
+      toast({
+        title: 'Unable to send reset email',
+        description: 'Please try again in a moment.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -135,7 +172,7 @@ export default function LoginPage() {
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Password</FormLabel>
-                      <button type="button" className="text-xs text-primary hover:underline">Forgot password?</button>
+                      <button type="button" onClick={onForgotPassword} className="text-xs text-primary hover:underline">Forgot password?</button>
                     </div>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
